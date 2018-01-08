@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Video.js | HTML5 Video Player</title>
+    <link href="acuxapivideo.css" rel="stylesheet">
+    <link href="video-js.min.css" rel="stylesheet">
+    <script src="xapiwrapper.min.js"></script>
+    <script src="videojs-ie8.min.js"></script>
+    <script src="video.min.js"></script>
+    <!--    <script src="acuxapivideo.js"> </script> 
+    <script src="xapi-videojs.js"> </script> -->
+    
+    <script src="acuxapivideo.js"> </script> 
+</head>
+<body>
+   
+  <div class="flex-container">
+      <button name="button" id="btnClose">Close and Go Back</button>
+
+  <video id="oceanLife_video" class="video-js vjs-default-skin" controls preload="auto" width="640" height="264" poster="http://vjs.zencdn.net/v/oceans.png" data-setup="{}">
+    <source src="http://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
+    <source src="http://vjs.zencdn.net/v/oceans.webm" type="video/webm">
+    <source src="http://vjs.zencdn.net/v/oceans.ogv" type="video/ogg">
+    <track kind="captions" src="captions/example-captions.vtt" srclang="en" label="English"></track>
+    <!-- Tracks need an ending tag thanks to IE9 -->
+    <track kind="subtitles" src="captions/example-captions.vtt" srclang="en" label="English"></track>
+    <!-- Tracks need an ending tag thanks to IE9 -->
+    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+  </video>
+    <p></p>
+  <video id="elephant_video" class="video-js vjs-default-skin" lang="en" controls preload="auto" width="640" height="360" poster="//d2zihajmogu5jn.cloudfront.net/elephantsdream/poster.png">
+    <source src="//d2zihajmogu5jn.cloudfront.net/elephantsdream/ed_hd.mp4" type="video/mp4">
+    <source src="//d2zihajmogu5jn.cloudfront.net/elephantsdream/ed_hd.ogg" type="video/ogg">
+    <track kind="captions" src="//d2zihajmogu5jn.cloudfront.net/elephantsdream/captions.en.vtt" srclang="en" label="English"></track><!-- Tracks need an ending tag thanks to IE9 -->
+    <track kind="subtitles" src="//d2zihajmogu5jn.cloudfront.net/elephantsdream/captions.ar.vtt" srclang="ar" label="Arabic"></track><!-- Tracks need an ending tag thanks to IE9 -->
+    <track kind="subtitles" src="//d2zihajmogu5jn.cloudfront.net/elephantsdream/captions.sv.vtt" srclang="sv" label="Swedish"></track><!-- Tracks need an ending tag thanks to IE9 -->
+    <track kind="subtitles" src="//d2zihajmogu5jn.cloudfront.net/elephantsdream/captions.ru.vtt" srclang="ru" label="Russian"></track><!-- Tracks need an ending tag thanks to IE9 -->
+    <track kind="subtitles" src="//d2zihajmogu5jn.cloudfront.net/elephantsdream/captions.ja.vtt" srclang="ja" label="Japanese"></track><!-- Tracks need an ending tag thanks to IE9 -->
+    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+  </video>
+
+  <script>
+
+    // ADL LRS Configuration - Basic Auth for demo purposes  
+    if(ADL.XAPIWrapper.lrs.actor == undefined) {
+        var conf = {
+           "endpoint" : "http://llv2.lrs.com/data/xAPI/",
+           "auth" : "Basic " + toBase64('da7e3a99aab036d0fde53c8625a1dd1d927b52dd:b10b780e8917e236094d06e6891351ecbe0ceb0e'),
+           "actor" : '{"mbox": "mailto:video-user@somedomain.com","name": "VideoJS User","objectType": "Agent"}'
+        };
+
+        ADL.XAPIWrapper.changeConfig(conf); 
+    }
+
+    var options = {
+                    controls: true,
+                    autoplay: false,
+                    preload: 'auto',
+                    fluid: false,
+                    playbackRates: [ 0.75, 1, 1.25, 1.5, 2, 4]
+    };
+
+    var v1 = ADL.acuxAPIVideo.getInstance();
+    v1.initialize("oceanLife_video", "http://www.mycompany.com/content/videos/", options, "Ocean Life", "Birds, fish, and various creatures");
+
+    var v2 = ADL.acuxAPIVideo.getInstance();
+    v2.initialize("elephant_video", "http://www.mycompany.com/content/videos/", options, "Elephant's dream", "Some animation video");
+
+    var btnClose = document.getElementById("btnClose");
+    btnClose.addEventListener("click", function onClose() {
+        if (window.confirm('Are you sure you want to terminate?')) {
+            v1.terminate();
+            v2.terminate();
+        }
+    }, false);
+
+
+  </script>
+</body>
+
+</html>
