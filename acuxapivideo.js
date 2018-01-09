@@ -23,6 +23,7 @@ var acuxAPIVideo = function() {
         var volumeSliderActive;
         var wasPaused;
         var ignoreFirstSeek = false;
+        var sendSynchronous = false;
 
         // statement-related vars
         var videoSessionId = null;
@@ -148,6 +149,14 @@ var acuxAPIVideo = function() {
                 }
             }
             XW.sendStatement(mys);
+            window.addEventListener("beforeunload", function (e) {
+                sendSynchronous = true;
+                // NONONO Calling player.pause() here does not trigger the 'pause' event and all the associated tasks
+                // so we disconnect the event, and trigger the event handler (onPause) manually
+                player.off('pause', onPause);
+                onPause();
+                sendTerminated();
+            });
         }
 
         function sendPlayed() {
@@ -259,9 +268,14 @@ var acuxAPIVideo = function() {
                 }
             }
             saveState();
+            /*
             XW.sendStatement(mys, function() {
                 setTimeout( function() { location.href = returnURL || 'https://www.google.com'; }, 200);
             });
+            */
+            XW.sendStatement(mys);  //send synchronously
+            location.href = returnURL;
+
         }
 
         function saveState() {
@@ -272,9 +286,14 @@ var acuxAPIVideo = function() {
                           progress: nProgress
             }
             jsonState = JSON.stringify(state);
-            XW.sendState(activityID, actor, 'VIDEOSTATE', reg, state, '*','*',  function(ev) {
-                console.log('State saved');
-            });
+            if (!sendSynchronous) {
+                var callback = function(ev) {
+                    console.log('State saved');
+                }
+            } else {
+                callback = null;
+            }
+            XW.sendState(activityID, actor, 'VIDEOSTATE', reg, state, '*','*', callback );
         }
 
         function loadState(callback) {
@@ -424,9 +443,11 @@ var acuxAPIVideo = function() {
 
             function terminate(returnUrl) {
                 returnURL = returnURL || 'https://www.google.com';
+                sendSynchronous = true;
                 // this function will be called from the outside, that's why it's not called 'onTerminate'
                 player.pause();
-                setTimeout(sendTerminated, 250);
+                //setTimeout(sendTerminated, 250);
+                sendTerminated();
             }
 
 
