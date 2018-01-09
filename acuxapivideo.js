@@ -22,6 +22,7 @@ var acuxAPIVideo = function() {
         var pTracks;
         var volumeSliderActive;
         var wasPaused;
+        var ignoreFirstSeek = false;
 
         // statement-related vars
         var videoSessionId = null;
@@ -288,7 +289,8 @@ var acuxAPIVideo = function() {
                 player.on('timeupdate', onTimeUpdate);
                 player.on('pause', onPause);
                 player.on('ended', onEnded);
-                player.on('seeked', onSeeked);
+                // NO NO NO player.on('seeked', onSeeked); do not wire-up seeked until we've loaded state.
+                player.on('seeked', onSeeked); 
                 // player.on('seeking', this.onSeeking.bind(this));
                 player.on('volumechange', onVolumeChange);
                 player.on('ratechange', onRateChange);
@@ -314,6 +316,8 @@ var acuxAPIVideo = function() {
                         nProgress = state.progress;
                     }
                     if (state.time) {
+                        // let's not track the initial seek
+                        ignoreFirstSeek = true;
                         player.currentTime(state.time);
                         //player.play();
                     }
@@ -370,6 +374,10 @@ var acuxAPIVideo = function() {
             function onSeeked() {
                 // HERE - use currentSegment[1] to get the seeked-from time
                 // console.log('seeked...from ' + currentSegment[1] + ' to ' +  player.currentTime());
+                if (ignoreFirstSeek) {
+                    ignoreFirstSeek = false;
+                    return;
+                };
                 sendSeeked(seekStart, formatFloat(player.currentTime()));
             }
 
