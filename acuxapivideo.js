@@ -319,6 +319,7 @@ var acuxAPIVideo = function() {
                         // let's not track the initial seek
                         ignoreFirstSeek = true;
                         player.currentTime(state.time);
+                        currentSegment = [state.time, state.time];
                         //player.play();
                     }
                 }
