@@ -129,6 +129,7 @@ var acuxAPIVideo = function() {
             videoSessionId = ADL.ruuid(); // Different from current xAPI Video Profile
             var quality = (player.videoHeight() < player.videoWidth())? player.videoHeight() : player.videoWidth();
             var mys = bareStatement();
+            mys.id = videoSessionId;
             mys.verb = new ADL.XAPIStatement.Verb('http://adlnet.gov/expapi/verbs/initialized','initialized');
             var ccInfo = getCCInfo();
             mys.context = {
